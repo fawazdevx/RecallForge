@@ -1,0 +1,17 @@
+/**
+ * Wraps an async Express handler so rejected promises reach the error
+ * middleware instead of crashing the process or hanging the request.
+ */
+import type { NextFunction, Request, Response } from "express";
+
+type AsyncHandler = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => Promise<unknown>;
+
+export function asyncHandler(fn: AsyncHandler) {
+  return (req: Request, res: Response, next: NextFunction) => {
+    fn(req, res, next).catch(next);
+  };
+}

@@ -1,0 +1,37 @@
+# Dependencies
+node_modules
+.pnp
+.pnp.js
+
+# Build output
+dist
+dist-ssr
+build
+
+# Env / secrets
+.env
+.env.local
+.env.*.local
+server/.env
+
+# Walrus local fallback cache
+server/.walrus-cache
+
+# Sui Move build artifacts
+move/**/build
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Editor / OS
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+.claude
