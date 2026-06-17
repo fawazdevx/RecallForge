@@ -9,7 +9,7 @@
 import cors from "cors";
 import express, { type NextFunction, type Request, type Response } from "express";
 import helmet from "helmet";
-import { activeEngine, env } from "./env";
+import { activeEngine, env } from "./env.js";
 import { getAgentMemory } from "./memory/agentMemory";
 import { agentsRouter } from "./routes/agents";
 import { memoryRouter } from "./routes/memory";
