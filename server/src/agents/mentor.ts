@@ -1,4 +1,6 @@
-
+/**
+ * Mentor Agent — onboarding roadmaps and cross-session recall.
+ */
 import {
   RecallSchema,
   RoadmapSchema,

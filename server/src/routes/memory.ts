@@ -1,4 +1,12 @@
-
+/**
+ * Memory Explorer routes — a developer-tool surface over the MemWal layer.
+ *
+ * These let the UI inspect and manage an agent's semantic memory on Walrus:
+ *  - POST /api/memory/search  — semantic search across a learner's memories
+ *  - POST /api/memory/restore — rebuild the vector index from Walrus blobs
+ *
+ * Both degrade gracefully when MemWal is disabled (enabled:false, empty result).
+ */
 import { Router } from "express";
 import {
   MemoryRestoreRequestSchema,

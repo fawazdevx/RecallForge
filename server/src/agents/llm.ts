@@ -10,8 +10,7 @@ function getClient(): Anthropic | null {
   if (!client) {
     client = new Anthropic({
       apiKey: env.ANTHROPIC_API_KEY,
-      
-
+      // Route through a compatible gateway when configured (e.g. a proxy key).
       ...(env.ANTHROPIC_BASE_URL ? { baseURL: env.ANTHROPIC_BASE_URL } : {}),
     });
   }

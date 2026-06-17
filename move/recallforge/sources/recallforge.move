@@ -226,7 +226,8 @@ public entry fun record_checkpoint(
     transfer::transfer(checkpoint, owner);
 }
 
-
+/// Promote a previously-attempted checkpoint to `completed`, attaching the
+/// final Walrus report and incrementing the profile's completed count.
 public entry fun complete_checkpoint(
     checkpoint: &mut SkillCheckpoint,
     profile: &mut LearnerProfile,

@@ -9,7 +9,7 @@ import { getWalrus } from "../walrus/walrus";
 
 export const walrusRouter = Router();
 
-
+// Accept real Walrus blob ids (base64url-ish) and our local: fallback ids.
 const BlobIdSchema = z
   .string()
   .min(1)
