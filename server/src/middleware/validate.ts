@@ -23,7 +23,7 @@ export function validateBody<T>(schema: ZodType<T>) {
   };
 }
 
-/** Type-safe accessor for the validated body inside a handler. */
+
 export function body<T>(res: Response): T {
   return res.locals.body as T;
 }

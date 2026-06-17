@@ -1,11 +1,4 @@
-/**
- * System prompts for the three RecallForge agents.
- *
- * Each prompt pins the agent to the Linux privilege-escalation track, demands
- * strict JSON output (validated downstream against the shared zod schemas), and
- * keeps the content educational/defensive — enumeration and remediation, never
- * weaponised, real-world exploits.
- */
+
 import {
   SKILL_LABELS,
   type SkillArea,
@@ -95,9 +88,7 @@ export function mentorRecallUser(input: {
         `- [${new Date(h.ts).toISOString().slice(0, 10)}] ${h.skill} (${h.status}, ${h.score}%): ${h.summary}`,
     )
     .join("\n");
-  // Memories retrieved by semantic similarity (MemWal). These are the most
-  // *relevant* past notes, not necessarily the most recent — prefer them when
-  // deciding what to recall.
+
   const memories = (input.recalledMemories ?? [])
     .map((m) => `- ${m.text}`)
     .join("\n");
