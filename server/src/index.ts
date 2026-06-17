@@ -12,21 +12,31 @@ import helmet from "helmet";
 import { activeEngine, env } from "./env";
 import { getAgentMemory } from "./memory/agentMemory";
 import { agentsRouter } from "./routes/agents";
+import { memoryRouter } from "./routes/memory";
 import { walrusRouter } from "./routes/walrus";
 import { getWalrus } from "./walrus/walrus";
 
 const app = express();
+
+// Allowed browser origins (comma-separated in CLIENT_ORIGIN). Requests with no
+// Origin header (curl, server-to-server, health checks) are always allowed.
+const allowedOrigins = env.CLIENT_ORIGIN.split(",")
+  .map((s) => s.trim())
+  .filter(Boolean);
 
 // --- Security & parsing middleware ---
 app.disable("x-powered-by");
 app.use(helmet());
 app.use(
   cors({
-    origin: env.CLIENT_ORIGIN,
+    origin(origin, cb) {
+      if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
+      cb(new Error(`Origin ${origin} not allowed by CORS`));
+    },
     methods: ["GET", "POST"],
   }),
 );
-// Cap body size: learner answers are bounded by the schema, this is belt-and-braces.
+
 app.use(express.json({ limit: "256kb" }));
 
 // --- Health ---
@@ -42,6 +52,7 @@ app.get("/api/health", (_req: Request, res: Response) => {
 
 // --- Routes ---
 app.use("/api", agentsRouter);
+app.use("/api/memory", memoryRouter);
 app.use("/api/walrus", walrusRouter);
 
 // --- 404 ---
@@ -56,10 +67,17 @@ app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
   res.status(500).json({ error: "Internal server error" });
 });
 
-app.listen(env.PORT, () => {
-  console.log(`\n🔥 RecallForge API on http://localhost:${env.PORT}`);
-  console.log(`   agent engine : ${activeEngine}`);
-  console.log(`   walrus mode  : ${getWalrus().mode}`);
-  console.log(`   memwal       : ${getAgentMemory().enabled ? "on (semantic recall)" : "off (chronological)"}`);
-  console.log(`   cors origin  : ${env.CLIENT_ORIGIN}\n`);
-});
+// On Vercel (serverless) the platform invokes the exported app directly — only
+// bind a port when running as a normal long-lived process (local dev, Railway…).
+if (!process.env.VERCEL) {
+  app.listen(env.PORT, () => {
+    console.log(`\n🔥 RecallForge API on http://localhost:${env.PORT}`);
+    console.log(`   agent engine : ${activeEngine}`);
+    console.log(`   walrus mode  : ${getWalrus().mode}`);
+    console.log(`   memwal       : ${getAgentMemory().enabled ? "on (semantic recall)" : "off (chronological)"}`);
+    console.log(`   cors origins : ${allowedOrigins.join(", ")}\n`);
+  });
+}
+
+// Default export = the Express app, used as the handler on Vercel serverless.
+export default app;

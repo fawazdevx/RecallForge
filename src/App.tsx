@@ -2,6 +2,7 @@ import { useCurrentAccount } from "@mysten/dapp-kit-react";
 import { ConnectButton } from "@mysten/dapp-kit-react/ui";
 import { useState } from "react";
 import {
+  Brain,
   History,
   LayoutDashboard,
   Map as MapIcon,
@@ -14,10 +15,11 @@ import { Dashboard } from "./views/Dashboard";
 import { ChallengeView } from "./views/ChallengeView";
 import { Timeline } from "./views/Timeline";
 import { ProgressMap } from "./views/Progress";
+import { MemoryExplorer } from "./views/MemoryExplorer";
 import { useRecallForge } from "./context/RecallForgeContext";
 import { cn } from "./lib/utils";
 
-type View = "dashboard" | "challenge" | "timeline" | "progress";
+type View = "dashboard" | "challenge" | "timeline" | "progress" | "memory";
 
 interface ActiveChallenge {
   focus: SkillArea;
@@ -26,7 +28,8 @@ interface ActiveChallenge {
 
 const NAV: Array<{ id: View; label: string; icon: React.ReactNode }> = [
   { id: "dashboard", label: "Dashboard", icon: <LayoutDashboard className="h-4 w-4" /> },
-  { id: "timeline", label: "Memory", icon: <History className="h-4 w-4" /> },
+  { id: "timeline", label: "Timeline", icon: <History className="h-4 w-4" /> },
+  { id: "memory", label: "Memory", icon: <Brain className="h-4 w-4" /> },
   { id: "progress", label: "Progress", icon: <MapIcon className="h-4 w-4" /> },
 ];
 
@@ -94,6 +97,7 @@ function App() {
         />
       )}
       {view === "timeline" && <Timeline />}
+      {view === "memory" && <MemoryExplorer />}
       {view === "progress" && <ProgressMap onStart={startChallenge} />}
     </Shell>
   );

@@ -22,6 +22,14 @@ import { env, hasMemWal } from "../env";
 export interface RecalledMemory {
   text: string;
   distance: number;
+  blobId?: string;
+}
+
+/** Outcome of rebuilding a namespace's vector index from Walrus. */
+export interface RestoreOutcome {
+  restored: number;
+  skipped: number;
+  total: number;
 }
 
 export interface AgentMemory {
@@ -31,10 +39,14 @@ export interface AgentMemory {
   remember(text: string, namespace: string): Promise<void>;
   /** Semantically recall memories for `namespace`. Returns [] on any failure. */
   recall(query: string, namespace: string, limit?: number): Promise<RecalledMemory[]>;
+  /** Rebuild a namespace's local vector index from its Walrus blobs. */
+  restore(namespace: string, limit?: number): Promise<RestoreOutcome>;
 }
 
 /** How long to wait on a recall (embed → search → download → decrypt) before giving up. */
 const RECALL_TIMEOUT_MS = 15_000;
+/** Restore re-downloads + re-embeds many blobs; allow more headroom. */
+const RESTORE_TIMEOUT_MS = 60_000;
 
 function withTimeout<T>(p: Promise<T>, ms: number, label: string): Promise<T> {
   return Promise.race([
@@ -80,10 +92,32 @@ class MemWalAgentMemory implements AgentMemory {
         RECALL_TIMEOUT_MS,
         "MemWal recall",
       );
-      return res.results.map((m) => ({ text: m.text, distance: m.distance }));
+      return res.results.map((m) => ({
+        text: m.text,
+        distance: m.distance,
+        blobId: m.blob_id,
+      }));
     } catch (err) {
       console.warn(`⚠️  MemWal recall failed (${(err as Error).message}); falling back.`);
       return [];
+    }
+  }
+
+  async restore(namespace: string, limit = 50): Promise<RestoreOutcome> {
+    try {
+      const res = await withTimeout(
+        this.getClient().restore(namespace, limit),
+        RESTORE_TIMEOUT_MS,
+        "MemWal restore",
+      );
+      return {
+        restored: res.restored,
+        skipped: res.skipped,
+        total: res.total,
+      };
+    } catch (err) {
+      console.warn(`⚠️  MemWal restore failed (${(err as Error).message}); skipped.`);
+      return { restored: 0, skipped: 0, total: 0 };
     }
   }
 }
@@ -96,6 +130,9 @@ class DisabledAgentMemory implements AgentMemory {
   }
   async recall(): Promise<RecalledMemory[]> {
     return [];
+  }
+  async restore(): Promise<RestoreOutcome> {
+    return { restored: 0, skipped: 0, total: 0 };
   }
 }
 

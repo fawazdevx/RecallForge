@@ -1,0 +1,50 @@
+/**
+ * Memory Explorer routes — a developer-tool surface over the MemWal layer.
+ *
+ * These let the UI inspect and manage an agent's semantic memory on Walrus:
+ *  - POST /api/memory/search  — semantic search across a learner's memories
+ *  - POST /api/memory/restore — rebuild the vector index from Walrus blobs
+ *
+ * Both degrade gracefully when MemWal is disabled (enabled:false, empty result).
+ */
+import { Router } from "express";
+import {
+  MemoryRestoreRequestSchema,
+  MemorySearchRequestSchema,
+  type MemoryRestoreRequest,
+  type MemorySearchRequest,
+} from "../../../shared/schema";
+import { getAgentMemory, nsFor } from "../memory/agentMemory";
+import { asyncHandler } from "../middleware/asyncHandler";
+import { rateLimit } from "../middleware/rateLimit";
+import { body, validateBody } from "../middleware/validate";
+
+export const memoryRouter = Router();
+
+const memoryLimiter = rateLimit({ capacity: 30, windowMs: 60_000 });
+
+memoryRouter.post(
+  "/search",
+  memoryLimiter,
+  validateBody(MemorySearchRequestSchema),
+  asyncHandler(async (_req, res) => {
+    const input = body<MemorySearchRequest>(res);
+    const mem = getAgentMemory();
+    const namespace = nsFor(input.address, input.handle);
+    const results = await mem.recall(input.query, namespace, input.limit);
+    res.json({ enabled: mem.enabled, namespace, results });
+  }),
+);
+
+memoryRouter.post(
+  "/restore",
+  memoryLimiter,
+  validateBody(MemoryRestoreRequestSchema),
+  asyncHandler(async (_req, res) => {
+    const input = body<MemoryRestoreRequest>(res);
+    const mem = getAgentMemory();
+    const namespace = nsFor(input.address, input.handle);
+    const outcome = await mem.restore(namespace, input.limit);
+    res.json({ enabled: mem.enabled, namespace, ...outcome });
+  }),
+);

@@ -1,12 +1,4 @@
-/**
- * Thin Anthropic Claude wrapper that returns schema-validated JSON.
- *
- * The model is instructed to emit a single JSON object; we extract and validate
- * it against the caller's zod schema. Any failure (no key, network error, bad
- * JSON, schema mismatch) resolves to `null` so callers can transparently fall
- * back to the deterministic engine. The system prompt is sent with prompt
- * caching to cut latency and cost on repeated calls.
- */
+
 import Anthropic from "@anthropic-ai/sdk";
 import type { ZodType } from "zod";
 import { env, hasLlm } from "../env";
@@ -25,10 +17,7 @@ function getClient(): Anthropic | null {
   return client;
 }
 
-/**
- * Call Claude and validate its JSON output against `schema`.
- * Returns the parsed value, or `null` on any failure.
- */
+
 export async function callClaudeJSON<T>(args: {
   system: string;
   user: string;
@@ -82,14 +71,14 @@ export async function callClaudeJSON<T>(args: {
   }
 }
 
-/** Best-effort extraction of the first JSON object from model text. */
+
 function extractJson(text: string): unknown {
   const trimmed = text.trim();
-  // Fast path: the whole response is JSON.
+  
   try {
     return JSON.parse(trimmed);
   } catch {
-    // Fall through to brace-matching.
+    
   }
   const start = trimmed.indexOf("{");
   const end = trimmed.lastIndexOf("}");

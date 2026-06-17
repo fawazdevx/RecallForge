@@ -34,6 +34,15 @@ export interface OnchainProfile {
   createdAtMs: number;
 }
 
+export interface OnchainPermission {
+  objectId: string;
+  agentName: string;
+  canReadMemory: boolean;
+  canWriteMemory: boolean;
+  expiresAtMs: number;
+  revoked: boolean;
+}
+
 const clients = new Map<SuiNetwork, SuiJsonRpcClient>();
 
 export function getReadClient(network: SuiNetwork): SuiJsonRpcClient {
@@ -111,6 +120,44 @@ export async function fetchCheckpoints(
   } while (cursor);
 
   return out.sort((a, b) => b.createdAtMs - a.createdAtMs);
+}
+
+/** Read all `AgentPermission` objects owned by an address. */
+export async function fetchPermissions(
+  network: SuiNetwork,
+  owner: string,
+): Promise<OnchainPermission[]> {
+  const client = getReadClient(network);
+  const pkg = getPackageId(network);
+  const structType = `${pkg}::${MODULE}::AgentPermission`;
+
+  const out: OnchainPermission[] = [];
+  let cursor: string | null | undefined = undefined;
+
+  do {
+    const page = await client.getOwnedObjects({
+      owner,
+      filter: { StructType: structType },
+      options: { showContent: true },
+      cursor: cursor ?? null,
+    });
+    for (const item of page.data) {
+      const content = item.data?.content;
+      if (!content || content.dataType !== "moveObject") continue;
+      const f = content.fields as Record<string, unknown>;
+      out.push({
+        objectId: String(item.data?.objectId ?? ""),
+        agentName: String(f.agent_name ?? ""),
+        canReadMemory: Boolean(f.can_read_memory),
+        canWriteMemory: Boolean(f.can_write_memory),
+        expiresAtMs: num(f.expires_at_ms),
+        revoked: Boolean(f.revoked),
+      });
+    }
+    cursor = page.hasNextPage ? page.nextCursor : null;
+  } while (cursor);
+
+  return out;
 }
 
 /** Move u64 fields arrive as strings over JSON-RPC; coerce safely. */

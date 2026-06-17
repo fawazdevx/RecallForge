@@ -200,8 +200,43 @@ export type OnboardingResponse = z.infer<typeof OnboardingResponseSchema>;
 export const RecalledMemorySchema = z.object({
   text: z.string().max(2000),
   distance: z.number(),
+  /** Walrus blob id backing this memory (absent on older entries). */
+  blobId: z.string().optional(),
 });
 export type RecalledMemory = z.infer<typeof RecalledMemorySchema>;
+
+// ===== Memory Explorer / Restore (dev-tool surface over MemWal) =====
+
+export const MemorySearchRequestSchema = z.object({
+  query: z.string().trim().min(1).max(400),
+  address: z.string().trim().max(120).optional(),
+  handle: z.string().trim().max(64).optional(),
+  limit: z.number().int().min(1).max(20).default(10),
+});
+export type MemorySearchRequest = z.infer<typeof MemorySearchRequestSchema>;
+
+export const MemorySearchResponseSchema = z.object({
+  enabled: z.boolean(),
+  namespace: z.string(),
+  results: z.array(RecalledMemorySchema),
+});
+export type MemorySearchResponse = z.infer<typeof MemorySearchResponseSchema>;
+
+export const MemoryRestoreRequestSchema = z.object({
+  address: z.string().trim().max(120).optional(),
+  handle: z.string().trim().max(64).optional(),
+  limit: z.number().int().min(1).max(100).default(50),
+});
+export type MemoryRestoreRequest = z.infer<typeof MemoryRestoreRequestSchema>;
+
+export const MemoryRestoreResponseSchema = z.object({
+  enabled: z.boolean(),
+  namespace: z.string(),
+  restored: z.number().int().nonnegative(),
+  skipped: z.number().int().nonnegative(),
+  total: z.number().int().nonnegative(),
+});
+export type MemoryRestoreResponse = z.infer<typeof MemoryRestoreResponseSchema>;
 
 export const RecallResponseSchema = z.object({
   recall: RecallSchema,

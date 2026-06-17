@@ -12,9 +12,9 @@ import {
 } from "../../../shared/schema";
 
 const SKILL_ENUM = Object.keys(SKILL_LABELS) as SkillArea[];
-/** "slug | slug | ..." for inline use in field specs. */
+
 const SKILL_SLUGS = SKILL_ENUM.join(" | ");
-/** "slug (Human Label)" pairs so the model knows the mapping. */
+
 const SKILL_GUIDE = SKILL_ENUM.map((s) => `${s} (${SKILL_LABELS[s]})`).join(", ");
 
 const COMMON_GUARDRAILS = `
@@ -62,7 +62,7 @@ useful next focus skill, and write a one-line memory summary for future recall.
 ${COMMON_GUARDRAILS}
 `.trim();
 
-// ===== User-message builders (the per-request payloads) =====
+
 
 export function mentorRoadmapUser(input: {
   handle: string;

@@ -1,0 +1,11 @@
+{
+  "routes": {
+    "/*": "/index.html"
+  },
+  "metadata": {
+    "link": "https://github.com/your-org/RecallForge",
+    "name": "RecallForge",
+    "description": "Persistent cybersecurity learning agents on Walrus & Sui",
+    "image_url": "https://www.walrus.xyz/walrus-site"
+  }
+}

@@ -20,7 +20,9 @@ const optionalSecret = z.preprocess(
 
 const EnvSchema = z.object({
   PORT: z.coerce.number().int().positive().default(8787),
-  CLIENT_ORIGIN: z.string().url().default("http://localhost:5173"),
+  // One or more allowed browser origins, comma-separated (dev URL, your Vercel
+  // deployment, your *.wal.app Walrus Site, an optional SuiNS origin).
+  CLIENT_ORIGIN: z.string().default("http://localhost:5173"),
   ANTHROPIC_API_KEY: optionalSecret,
   ANTHROPIC_MODEL: z.string().default("claude-sonnet-4-6"),
   // Optional override for an Anthropic-compatible gateway/proxy. When unset the

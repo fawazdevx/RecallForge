@@ -9,6 +9,8 @@ import {
   ChallengeResponseSchema,
   EvaluateResponseSchema,
   HealthResponseSchema,
+  MemoryRestoreResponseSchema,
+  MemorySearchResponseSchema,
   OnboardingResponseSchema,
   RecallResponseSchema,
   type ChallengeRequest,
@@ -16,6 +18,10 @@ import {
   type EvaluateRequest,
   type EvaluateResponse,
   type HealthResponse,
+  type MemoryRestoreRequest,
+  type MemoryRestoreResponse,
+  type MemorySearchRequest,
+  type MemorySearchResponse,
   type OnboardingRequest,
   type OnboardingResponse,
   type RecallRequest,
@@ -91,5 +97,19 @@ export const api = {
       "/evaluate",
       req,
       EvaluateResponseSchema,
+    ),
+
+  memorySearch: (req: MemorySearchRequest) =>
+    post<MemorySearchRequest, MemorySearchResponse>(
+      "/memory/search",
+      req,
+      MemorySearchResponseSchema,
+    ),
+
+  memoryRestore: (req: MemoryRestoreRequest) =>
+    post<MemoryRestoreRequest, MemoryRestoreResponse>(
+      "/memory/restore",
+      req,
+      MemoryRestoreResponseSchema,
     ),
 };

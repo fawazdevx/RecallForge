@@ -8,6 +8,7 @@
     "dev:server": "npm --prefix server run dev",
     "dev:all": "concurrently -n web,api -c magenta,cyan \"npm run dev\" \"npm run dev:server\"",
     "build": "tsc && vite build",
+    "build:site": "npm run build && cp ws-resources.json dist/ws-resources.json",
     "preview": "vite preview",
     "codegen": "rm -rf src/contracts && sui-ts-codegen generate"
   },

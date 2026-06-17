@@ -78,3 +78,42 @@ export function buildCompleteCheckpointTx(
 function clampU8(n: number): number {
   return Math.max(0, Math.min(255, Math.round(n)));
 }
+
+export interface GrantAgentArgs {
+  agentName: string;
+  canReadMemory: boolean;
+  canWriteMemory: boolean;
+  /** Absolute expiry in epoch ms (0 = no expiry). */
+  expiresAtMs: number;
+}
+
+/** Grant a named agent scoped, revocable access to the learner's memory. */
+export function buildGrantAgentTx(
+  network: SuiNetwork,
+  args: GrantAgentArgs,
+): Transaction {
+  const tx = new Transaction();
+  tx.moveCall({
+    target: target(network, "grant_agent"),
+    arguments: [
+      tx.pure.string(args.agentName),
+      tx.pure.bool(args.canReadMemory),
+      tx.pure.bool(args.canWriteMemory),
+      tx.pure.u64(BigInt(Math.max(0, Math.round(args.expiresAtMs)))),
+    ],
+  });
+  return tx;
+}
+
+/** Revoke a previously granted agent permission. */
+export function buildRevokeAgentTx(
+  network: SuiNetwork,
+  permissionId: string,
+): Transaction {
+  const tx = new Transaction();
+  tx.moveCall({
+    target: target(network, "revoke_agent"),
+    arguments: [tx.object(permissionId)],
+  });
+  return tx;
+}
