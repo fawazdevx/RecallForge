@@ -1,7 +1,7 @@
 
 import Anthropic from "@anthropic-ai/sdk";
 import type { ZodType } from "zod";
-import { env, hasLlm } from "../env";
+import { env, hasLlm } from "../env.js";
 
 let client: Anthropic | null = null;
 

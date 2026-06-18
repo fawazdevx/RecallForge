@@ -12,7 +12,7 @@ import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { env } from "../env";
+import { env } from "../env.js";
 
 export interface StoreResult {
   blobId: string;

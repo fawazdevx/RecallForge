@@ -13,11 +13,11 @@ import {
   MemorySearchRequestSchema,
   type MemoryRestoreRequest,
   type MemorySearchRequest,
-} from "../../../shared/schema";
-import { getAgentMemory, nsFor } from "../memory/agentMemory";
-import { asyncHandler } from "../middleware/asyncHandler";
-import { rateLimit } from "../middleware/rateLimit";
-import { body, validateBody } from "../middleware/validate";
+} from "../../../shared/schema.js";
+import { getAgentMemory, nsFor } from "../memory/agentMemory.js";
+import { asyncHandler } from "../middleware/asyncHandler.js";
+import { rateLimit } from "../middleware/rateLimit.js";
+import { body, validateBody } from "../middleware/validate.js";
 
 export const memoryRouter = Router();
 

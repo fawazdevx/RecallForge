@@ -16,7 +16,7 @@
  * Walrus publisher fallback and the Anthropic-key fallback.
  */
 import { MemWal } from "@mysten-incubation/memwal";
-import { env, hasMemWal } from "../env";
+import { env, hasMemWal } from "../env.js";
 
 /** A single relevant memory surfaced by semantic search (lower distance = closer). */
 export interface RecalledMemory {

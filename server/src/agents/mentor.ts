@@ -9,10 +9,10 @@ import {
   type RecalledMemory,
   type RecallRequest,
   type Roadmap,
-} from "../../../shared/schema";
-import { fallbackRecall, fallbackRoadmap } from "./fallback";
-import { callClaudeJSON } from "./llm";
-import { MENTOR_SYSTEM, mentorRecallUser, mentorRoadmapUser } from "./prompts";
+} from "../../../shared/schema.js";
+import { fallbackRecall, fallbackRoadmap } from "./fallback.js";
+import { callClaudeJSON } from "./llm.js";
+import { MENTOR_SYSTEM, mentorRecallUser, mentorRoadmapUser } from "./prompts.js";
 
 export type Engine = "claude" | "fallback";
 

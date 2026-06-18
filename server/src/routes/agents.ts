@@ -23,15 +23,15 @@ import {
   type MemoryArtifact,
   type OnboardingRequest,
   type RecallRequest,
-} from "../../../shared/schema";
-import { generateChallenge } from "../agents/challenge";
-import { evaluateAnswer } from "../agents/evaluator";
-import { mentorRecall, mentorRoadmap } from "../agents/mentor";
-import { getAgentMemory, nsFor } from "../memory/agentMemory";
-import { asyncHandler } from "../middleware/asyncHandler";
-import { rateLimit } from "../middleware/rateLimit";
-import { body, validateBody } from "../middleware/validate";
-import { getWalrus } from "../walrus/walrus";
+} from "../../../shared/schema.js";
+import { generateChallenge } from "../agents/challenge.js";
+import { evaluateAnswer } from "../agents/evaluator.js";
+import { mentorRecall, mentorRoadmap } from "../agents/mentor.js";
+import { getAgentMemory, nsFor } from "../memory/agentMemory.js";
+import { asyncHandler } from "../middleware/asyncHandler.js";
+import { rateLimit } from "../middleware/rateLimit.js";
+import { body, validateBody } from "../middleware/validate.js";
+import { getWalrus } from "../walrus/walrus.js";
 
 export const agentsRouter = Router();
 

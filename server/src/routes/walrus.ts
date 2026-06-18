@@ -4,8 +4,8 @@
  */
 import { Router } from "express";
 import { z } from "zod";
-import { asyncHandler } from "../middleware/asyncHandler";
-import { getWalrus } from "../walrus/walrus";
+import { asyncHandler } from "../middleware/asyncHandler.js";
+import { getWalrus } from "../walrus/walrus.js";
 
 export const walrusRouter = Router();
 

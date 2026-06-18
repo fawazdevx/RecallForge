@@ -10,11 +10,11 @@ import cors from "cors";
 import express, { type NextFunction, type Request, type Response } from "express";
 import helmet from "helmet";
 import { activeEngine, env } from "./env.js";
-import { getAgentMemory } from "./memory/agentMemory";
-import { agentsRouter } from "./routes/agents";
-import { memoryRouter } from "./routes/memory";
-import { walrusRouter } from "./routes/walrus";
-import { getWalrus } from "./walrus/walrus";
+import { getAgentMemory } from "./memory/agentMemory.js";
+import { agentsRouter } from "./routes/agents.js";
+import { memoryRouter } from "./routes/memory.js";
+import { walrusRouter } from "./routes/walrus.js";
+import { getWalrus } from "./walrus/walrus.js";
 
 const app = express();
 

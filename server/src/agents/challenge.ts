@@ -5,11 +5,11 @@ import {
   ChallengeSchema,
   type Challenge,
   type ChallengeRequest,
-} from "../../../shared/schema";
-import { fallbackChallenge } from "./fallback";
-import { callClaudeJSON } from "./llm";
-import { CHALLENGE_SYSTEM, challengeUser } from "./prompts";
-import type { Engine } from "./mentor";
+} from "../../../shared/schema.js";
+import { fallbackChallenge } from "./fallback.js";
+import { callClaudeJSON } from "./llm.js";
+import { CHALLENGE_SYSTEM, challengeUser } from "./prompts.js";
+import type { Engine } from "./mentor.js";
 
 export async function generateChallenge(
   req: ChallengeRequest,

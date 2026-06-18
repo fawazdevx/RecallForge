@@ -9,7 +9,7 @@
 import {
   SKILL_LABELS,
   type SkillArea,
-} from "../../../shared/schema";
+} from "../../../shared/schema.js";
 
 const SKILL_ENUM = Object.keys(SKILL_LABELS) as SkillArea[];
 

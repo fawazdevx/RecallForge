@@ -5,11 +5,11 @@ import {
   EvaluationSchema,
   type Evaluation,
   type EvaluateRequest,
-} from "../../../shared/schema";
-import { fallbackEvaluate } from "./fallback";
-import { callClaudeJSON } from "./llm";
-import { EVALUATOR_SYSTEM, evaluateUser } from "./prompts";
-import type { Engine } from "./mentor";
+} from "../../../shared/schema.js";
+import { fallbackEvaluate } from "./fallback.js";
+import { callClaudeJSON } from "./llm.js";
+import { EVALUATOR_SYSTEM, evaluateUser } from "./prompts.js";
+import type { Engine } from "./mentor.js";
 
 export async function evaluateAnswer(
   req: EvaluateRequest,
