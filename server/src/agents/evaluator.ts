@@ -21,8 +21,6 @@ export async function evaluateAnswer(
     maxTokens: 1200,
   });
 
-  // Pin a couple of fields to the source challenge so the UI/Sui record stays
-  // consistent regardless of what the model echoed back.
   if (llm) {
     return {
       evaluation: {

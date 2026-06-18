@@ -25,7 +25,7 @@ export async function generateChallenge(
     maxTokens: 1600,
   });
 
-  // Even when Claude succeeds, the focus skill must match what was requested.
+  
   if (llm && llm.skill === req.focus) {
     return { challenge: llm, engine: "claude" };
   }

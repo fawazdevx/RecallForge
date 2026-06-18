@@ -206,6 +206,7 @@ src/                   React frontend
 | `npm run dev:all` | Run frontend + backend together |
 | `npm run dev` | Frontend only |
 | `npm run dev:server` | Backend only |
+| `npm --prefix server run build` | Build the backend |
 | `npm run build` | Type-check + build the frontend |
 | `npm --prefix server run typecheck` | Type-check the backend |
 | `npm run codegen` | Regenerate Move TS bindings (optional) |

@@ -29,7 +29,7 @@ import { SKILL_LABELS } from "../../../shared/schema";
 interface Concept {
   concept: string;
   weight: number;
-  /** Lower-cased substrings that, if present in the answer, credit the concept. */
+
   keywords: string[];
 }
 
@@ -482,8 +482,7 @@ export function fallbackRecall(
   recalledMemories: RecalledMemory[] = [],
 ): Recall {
   if (req.history.length === 0) {
-    // Even with no on-chain history, MemWal may surface a memory from a prior
-    // session (e.g. fresh browser, same wallet) — recall the most relevant one.
+
     const top = recalledMemories[0];
     if (top) {
       return {
