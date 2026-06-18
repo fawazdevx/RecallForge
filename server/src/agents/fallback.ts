@@ -23,8 +23,8 @@ import type {
   RecallRequest,
   Roadmap,
   SkillArea,
-} from "../../../shared/schema.js";
-import { SKILL_LABELS } from "../../../shared/schema.js";
+} from "../shared/schema.js";
+import { SKILL_LABELS } from "../shared/schema.js";
 
 interface Concept {
   concept: string;

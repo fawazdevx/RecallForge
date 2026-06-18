@@ -5,7 +5,7 @@ import {
   ChallengeSchema,
   type Challenge,
   type ChallengeRequest,
-} from "../../../shared/schema.js";
+} from "../shared/schema.js";
 import { fallbackChallenge } from "./fallback.js";
 import { callClaudeJSON } from "./llm.js";
 import { CHALLENGE_SYSTEM, challengeUser } from "./prompts.js";

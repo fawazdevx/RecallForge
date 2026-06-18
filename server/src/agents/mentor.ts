@@ -9,7 +9,7 @@ import {
   type RecalledMemory,
   type RecallRequest,
   type Roadmap,
-} from "../../../shared/schema.js";
+} from "../shared/schema.js";
 import { fallbackRecall, fallbackRoadmap } from "./fallback.js";
 import { callClaudeJSON } from "./llm.js";
 import { MENTOR_SYSTEM, mentorRecallUser, mentorRoadmapUser } from "./prompts.js";

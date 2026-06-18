@@ -5,7 +5,7 @@ import {
   EvaluationSchema,
   type Evaluation,
   type EvaluateRequest,
-} from "../../../shared/schema.js";
+} from "../shared/schema.js";
 import { fallbackEvaluate } from "./fallback.js";
 import { callClaudeJSON } from "./llm.js";
 import { EVALUATOR_SYSTEM, evaluateUser } from "./prompts.js";

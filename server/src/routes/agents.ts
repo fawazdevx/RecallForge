@@ -23,7 +23,7 @@ import {
   type MemoryArtifact,
   type OnboardingRequest,
   type RecallRequest,
-} from "../../../shared/schema.js";
+} from "../shared/schema.js";
 import { generateChallenge } from "../agents/challenge.js";
 import { evaluateAnswer } from "../agents/evaluator.js";
 import { mentorRecall, mentorRoadmap } from "../agents/mentor.js";

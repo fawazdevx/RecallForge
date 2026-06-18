@@ -13,7 +13,7 @@ import {
   MemorySearchRequestSchema,
   type MemoryRestoreRequest,
   type MemorySearchRequest,
-} from "../../../shared/schema.js";
+} from "../shared/schema.js";
 import { getAgentMemory, nsFor } from "../memory/agentMemory.js";
 import { asyncHandler } from "../middleware/asyncHandler.js";
 import { rateLimit } from "../middleware/rateLimit.js";
