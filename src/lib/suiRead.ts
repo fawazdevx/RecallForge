@@ -80,6 +80,50 @@ export async function fetchProfile(
   };
 }
 
+/**
+ * Discover a learner's own `LearnerProfile` directly from the chain (no local
+ * cache needed). Returns the earliest-created profile they own, or null. This is
+ * what makes recall work in a fresh browser / private window / new device — the
+ * profile pointer is reconstructed from Sui, not localStorage.
+ */
+export async function fetchOwnedProfile(
+  network: SuiNetwork,
+  owner: string,
+): Promise<OnchainProfile | null> {
+  const client = getReadClient(network);
+  const pkg = getPackageId(network);
+  const structType = `${pkg}::${MODULE}::LearnerProfile`;
+
+  const profiles: OnchainProfile[] = [];
+  let cursor: string | null | undefined = undefined;
+  do {
+    const page = await client.getOwnedObjects({
+      owner,
+      filter: { StructType: structType },
+      options: { showContent: true },
+      cursor: cursor ?? null,
+    });
+    for (const item of page.data) {
+      const content = item.data?.content;
+      if (!content || content.dataType !== "moveObject") continue;
+      const f = content.fields as Record<string, unknown>;
+      profiles.push({
+        objectId: String(item.data?.objectId ?? ""),
+        handle: String(f.handle ?? ""),
+        totalPoints: num(f.total_points),
+        completedCount: num(f.completed_count),
+        attemptedCount: num(f.attempted_count),
+        createdAtMs: num(f.created_at_ms),
+      });
+    }
+    cursor = page.hasNextPage ? page.nextCursor : null;
+  } while (cursor);
+
+  if (profiles.length === 0) return null;
+  // Earliest-created is the canonical one if several exist.
+  return profiles.sort((a, b) => a.createdAtMs - b.createdAtMs)[0];
+}
+
 /** Read all `SkillCheckpoint` objects owned by an address, newest first. */
 export async function fetchCheckpoints(
   network: SuiNetwork,

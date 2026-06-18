@@ -19,6 +19,7 @@ import { useCurrentAccount } from "@mysten/dapp-kit-react";
 import { DEFAULT_NETWORK, isDeployed, type SuiNetwork } from "../constants";
 import {
   fetchCheckpoints,
+  fetchOwnedProfile,
   fetchProfile,
   type OnchainCheckpoint,
   type OnchainProfile,
@@ -30,6 +31,8 @@ interface RecallForgeState {
   deployed: boolean;
   profileId: string | null;
   setProfileId: (id: string | null) => void;
+  /** True while we're discovering the profile from chain (fresh browser). */
+  profileLoading: boolean;
   profile: OnchainProfile | null;
   checkpoints: OnchainCheckpoint[];
   loading: boolean;
@@ -52,20 +55,56 @@ export function RecallForgeProvider({ children }: { children: ReactNode }) {
   const deployed = isDeployed(network);
 
   const [profileId, setProfileIdState] = useState<string | null>(null);
+  const [profileLoading, setProfileLoading] = useState(false);
   const [profile, setProfile] = useState<OnchainProfile | null>(null);
   const [checkpoints, setCheckpoints] = useState<OnchainCheckpoint[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Load the persisted profile-id pointer whenever the address changes.
+  // Resolve the learner's profile id whenever the address changes. We try the
+  // local cache first (fast path), then fall back to discovering it on-chain —
+  // so a returning learner on a fresh browser / private window / new device
+  // lands on their dashboard instead of being asked to onboard again.
   useEffect(() => {
     if (!address) {
       setProfileIdState(null);
+      setProfileLoading(false);
       return;
     }
+
     const stored = localStorage.getItem(profileKey(address));
-    setProfileIdState(stored);
-  }, [address]);
+    if (stored) {
+      setProfileIdState(stored);
+      setProfileLoading(false);
+      return;
+    }
+
+    // No local pointer: discover the profile from Sui.
+    setProfileIdState(null);
+    if (!deployed) {
+      setProfileLoading(false);
+      return;
+    }
+    let cancelled = false;
+    setProfileLoading(true);
+    void (async () => {
+      try {
+        const prof = await fetchOwnedProfile(network, address);
+        if (cancelled) return;
+        if (prof) {
+          setProfileIdState(prof.objectId);
+          localStorage.setItem(profileKey(address), prof.objectId);
+        }
+      } catch {
+        // Non-fatal: fall through to onboarding.
+      } finally {
+        if (!cancelled) setProfileLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [address, deployed, network]);
 
   const setProfileId = useCallback(
     (id: string | null) => {
@@ -111,6 +150,7 @@ export function RecallForgeProvider({ children }: { children: ReactNode }) {
       deployed,
       profileId,
       setProfileId,
+      profileLoading,
       profile,
       checkpoints,
       loading,
@@ -123,6 +163,7 @@ export function RecallForgeProvider({ children }: { children: ReactNode }) {
       deployed,
       profileId,
       setProfileId,
+      profileLoading,
       profile,
       checkpoints,
       loading,

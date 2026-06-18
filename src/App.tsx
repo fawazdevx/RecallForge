@@ -5,6 +5,7 @@ import {
   Brain,
   History,
   LayoutDashboard,
+  Loader2,
   Map as MapIcon,
   ShieldCheck,
 } from "lucide-react";
@@ -35,7 +36,7 @@ const NAV: Array<{ id: View; label: string; icon: React.ReactNode }> = [
 
 function App() {
   const account = useCurrentAccount();
-  const { profileId, network } = useRecallForge();
+  const { profileId, profileLoading, network } = useRecallForge();
   const [view, setView] = useState<View>("dashboard");
   const [active, setActive] = useState<ActiveChallenge | null>(null);
 
@@ -49,6 +50,19 @@ function App() {
     return (
       <Shell network={network} nav={null}>
         <Landing />
+      </Shell>
+    );
+  }
+
+  // Connected, but still discovering the profile from chain → loader (avoids
+  // flashing onboarding for a returning learner on a fresh browser).
+  if (profileLoading) {
+    return (
+      <Shell network={network} nav={null}>
+        <div className="flex min-h-[60vh] items-center justify-center text-muted-foreground">
+          <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+          Restoring your profile from Sui…
+        </div>
       </Shell>
     );
   }
