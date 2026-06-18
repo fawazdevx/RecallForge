@@ -38,7 +38,7 @@ export const agentsRouter = Router();
 // Agent endpoints may incur LLM cost — rate limit them.
 const agentLimiter = rateLimit({ capacity: 30, windowMs: 60_000 });
 
-/** YYYY-MM-DD prefix for human-readable memory lines. */
+
 function isoDate(ms: number): string {
   return new Date(ms).toISOString().slice(0, 10);
 }
