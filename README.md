@@ -20,10 +20,10 @@ Built for **Sui Overflow · Walrus Track**.
 
 ## Live demo
 
-- **App:** `https://your-frontend.vercel.app`
-- **API health:** `https://your-backend.vercel.app/api/health`
-- **Demo video:** `https://your-demo-video-url`
-- **Sui package:** `0x<your_testnet_package_id>`
+- **App:** `https://recallforgeai.vercel.app`
+- **API health:** `https://recallforgebackend.vercel.app/api/health`
+- **Demo video:** `https://youtu.be/t0u9uNYy0HI`
+- **Sui package:** `0x9c42bd6d9b5af44c7f3a435fce129c5c35df026a05d198645894ce6e72dea939`
 - **Network:** Sui testnet
 
 > Deployment note: the current demo frontend and backend are hosted on Vercel.
