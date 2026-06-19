@@ -9,7 +9,7 @@
  *                       past struggle ("what did they trip on in privesc?"),
  *                       regardless of recency.
  *
- * MemWal does all embedding / SEAL-encryption / Walrus upload server-side (TEE);
+ * MemWal will do all embedding / SEAL-encryption / Walrus upload server-side (TEE);
  * the SDK just signs requests with an Ed25519 delegate key. Everything here is
  * best-effort: if MemWal is unconfigured or unreachable, the app degrades to
  * chronological recall and never throws into a request handler — mirroring the
@@ -43,9 +43,9 @@ export interface AgentMemory {
   restore(namespace: string, limit?: number): Promise<RestoreOutcome>;
 }
 
-/** How long to wait on a recall (embed → search → download → decrypt) before giving up. */
+
 const RECALL_TIMEOUT_MS = 15_000;
-/** Restore re-downloads + re-embeds many blobs; allow more headroom. */
+
 const RESTORE_TIMEOUT_MS = 60_000;
 
 function withTimeout<T>(p: Promise<T>, ms: number, label: string): Promise<T> {
@@ -76,9 +76,7 @@ class MemWalAgentMemory implements AgentMemory {
 
   async remember(text: string, namespace: string): Promise<void> {
     try {
-      // Accept-only: the relayer finishes embedding/encrypting/uploading in the
-      // background. We don't block the request on indexing — the payoff is
-      // next-session recall, and chronological history covers the same session.
+      
       await this.getClient().remember(text, namespace);
     } catch (err) {
       console.warn(`⚠️  MemWal remember failed (${(err as Error).message}); skipped.`);
@@ -122,7 +120,7 @@ class MemWalAgentMemory implements AgentMemory {
   }
 }
 
-/** No-op memory used when MemWal is not configured. */
+
 class DisabledAgentMemory implements AgentMemory {
   readonly enabled = false;
   async remember(): Promise<void> {
@@ -138,7 +136,7 @@ class DisabledAgentMemory implements AgentMemory {
 
 let instance: AgentMemory | null = null;
 
-/** Lazily construct the configured agent-memory backend (singleton). */
+
 export function getAgentMemory(): AgentMemory {
   if (!instance) {
     instance = hasMemWal ? new MemWalAgentMemory() : new DisabledAgentMemory();
@@ -146,10 +144,7 @@ export function getAgentMemory(): AgentMemory {
   return instance;
 }
 
-/**
- * Build the MemWal namespace for a learner. Scopes memories per wallet (falls
- * back to handle, then "anon"), so one learner never recalls another's memory.
- */
+
 export function nsFor(address?: string | null, handle?: string | null): string {
   const id = (address || handle || "anon").trim() || "anon";
   return `${env.MEMWAL_NAMESPACE_PREFIX}:${id}`;

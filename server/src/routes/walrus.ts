@@ -1,7 +1,4 @@
-/**
- * Walrus read route — proxies a stored memory artifact back to the client so
- * the UI can render the raw on-Walrus JSON (the "artifact viewer").
- */
+
 import { Router } from "express";
 import { z } from "zod";
 import { asyncHandler } from "../middleware/asyncHandler.js";

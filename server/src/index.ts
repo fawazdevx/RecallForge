@@ -1,11 +1,4 @@
-/**
- * RecallForge backend entrypoint.
- *
- * A small, stateless Express API that (1) runs the 3 learning agents (Claude
- * with a deterministic fallback) and (2) reads/writes learning memory on
- * Walrus. It holds no per-user state and never signs Sui transactions — the
- * user's wallet does that on the client.
- */
+
 import cors from "cors";
 import express, { type NextFunction, type Request, type Response } from "express";
 import helmet from "helmet";
@@ -18,8 +11,7 @@ import { getWalrus } from "./walrus/walrus.js";
 
 const app = express();
 
-// Allowed browser origins (comma-separated in CLIENT_ORIGIN). Requests with no
-// Origin header (curl, server-to-server, health checks) are always allowed.
+
 const allowedOrigins = env.CLIENT_ORIGIN.split(",")
   .map((s) => s.trim())
   .filter(Boolean);

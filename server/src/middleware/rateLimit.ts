@@ -1,10 +1,4 @@
-/**
- * Tiny in-memory, per-IP token-bucket rate limiter.
- *
- * The agent endpoints can trigger paid LLM calls, so this caps abuse/cost
- * without a Redis dependency. It is process-local (fine for a hackathon /
- * single-instance deploy); swap for a shared store if horizontally scaled.
- */
+
 import type { NextFunction, Request, Response } from "express";
 
 interface Bucket {

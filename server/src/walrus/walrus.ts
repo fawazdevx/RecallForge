@@ -55,11 +55,7 @@ class LocalWalrusMemory implements WalrusMemory {
   }
 }
 
-/**
- * Store/read blobs via the Walrus HTTP publisher/aggregator. Falls back to the
- * local cache automatically if the publisher is unreachable, so a flaky network
- * never breaks a live demo.
- */
+
 class HttpWalrusMemory implements WalrusMemory {
   readonly mode = "network" as const;
   private readonly local = new LocalWalrusMemory();

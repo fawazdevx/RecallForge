@@ -1,12 +1,4 @@
-/**
- * Shared zod schemas and types — the single source of truth for the data that
- * flows between the RecallForge frontend (`src/`) and backend (`server/`).
- *
- * Keeping these in one place means an agent response that type-checks on the
- * server is guaranteed to match what the UI renders. The backend validates
- * every LLM output against these schemas before returning it, so malformed or
- * hallucinated model output can never reach the client.
- */
+
 import { z } from "zod";
 
 // ===== Primitives =====
@@ -134,7 +126,7 @@ export type MemoryArtifact = z.infer<typeof MemoryArtifactSchema>;
 
 const HandleSchema = z.string().trim().min(2).max(64);
 const AnswerSchema = z.string().trim().min(1).max(8000);
-/** Connected wallet address, used to scope a learner's MemWal memory namespace. */
+/** Connected wallet address, used to scope a learner's MemWal memory . */
 const AddressSchema = z.string().trim().max(120).optional();
 
 export const OnboardingRequestSchema = z.object({
@@ -205,7 +197,7 @@ export const RecalledMemorySchema = z.object({
 });
 export type RecalledMemory = z.infer<typeof RecalledMemorySchema>;
 
-// ===== Memory Explorer / Restore (dev-tool surface over MemWal) =====
+// ===== Memory Explorer =====
 
 export const MemorySearchRequestSchema = z.object({
   query: z.string().trim().min(1).max(400),

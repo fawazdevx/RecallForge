@@ -35,7 +35,7 @@ import { getWalrus } from "../walrus/walrus.js";
 
 export const agentsRouter = Router();
 
-// Agent endpoints may incur LLM cost — rate limit them.
+
 const agentLimiter = rateLimit({ capacity: 30, windowMs: 60_000 });
 
 
@@ -82,8 +82,7 @@ agentsRouter.post(
   asyncHandler(async (_req, res) => {
     const input = body<RecallRequest>(res);
 
-    // Semantic recall: ask MemWal for this learner's most relevant past
-    // struggles, regardless of recency. Empty when MemWal is disabled.
+    
     const recentSkill = input.history.at(-1)?.skill;
     const query =
       `What has ${input.handle} struggled with or needs to revisit in Linux ` +
@@ -133,8 +132,6 @@ agentsRouter.post(
     };
     const stored = await getWalrus().store(artifact);
 
-    // Mirror the attempt into semantic memory: the natural-language summary is
-    // what the Mentor later recalls ("last time you struggled with ...").
     await getAgentMemory().remember(
       `[${isoDate(artifact.createdAtMs)}] ${evaluation.skill} — scored ` +
         `${evaluation.score}/${evaluation.maxScore}: ${evaluation.memorySummary}`,
