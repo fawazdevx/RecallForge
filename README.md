@@ -18,6 +18,28 @@ Built for **Sui Overflow · Walrus Track**.
 
 ---
 
+## Live demo
+
+- **App:** `https://your-frontend.vercel.app`
+- **API health:** `https://your-backend.vercel.app/api/health`
+- **Demo video:** `https://your-demo-video-url`
+- **Sui package:** `0x<your_testnet_package_id>`
+- **Network:** Sui testnet
+
+> Deployment note: the current demo frontend and backend are hosted on Vercel.
+> Learning artifacts are stored on Walrus, and progress checkpoints are anchored
+> on Sui testnet.
+
+## What to watch
+
+1. Onboarding creates a personalized roadmap.
+2. The Challenge Agent generates a focused Linux privilege-escalation lab.
+3. The Evaluator stores an attempt report as a Walrus memory artifact.
+4. The learner records a Sui `SkillCheckpoint` that references the Walrus blob.
+5. Returning later shows RecallForge using prior memory to target the next step.
+
+---
+
 ## Why it's different
 
 Most AI tutors forget everything after a session. RecallForge makes memory the
@@ -47,10 +69,21 @@ Browser (Vite + React 19 + dApp-Kit)            Node/Express (stateless)        
   holds your wallet key; the Claude key never leaves the server.
 - **Move package** — `LearnerProfile`, `SkillCheckpoint`, optional
   `AgentPermission`. Owner-asserted, event-emitting, compact on-chain state.
-- **Shared schemas** — one zod source of truth (`shared/schema.ts`) validates
-  every agent response on both ends.
+- **Schemas** — zod schemas validate every API request and agent response. The
+  frontend uses `shared/schema.ts`; the backend keeps a deployment-local copy in
+  `server/src/shared/schema.ts` so Vercel serverless functions resolve runtime
+  dependencies correctly.
 
-See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the full data flow.
+## Deployed architecture
+
+- **Frontend:** Vercel-hosted Vite/React app.
+- **Backend:** Vercel-hosted stateless Express API with CORS locked to the
+  frontend origin.
+- **Walrus:** API stores onboarding roadmaps, attempt reports, and recall
+  artifacts as JSON blobs.
+- **Sui testnet:** connected wallets sign profile and checkpoint transactions;
+  the backend never signs on behalf of users.
+- **MemWal:** optional semantic recall layer for relevance-based memory search.
 
 ### Two memory layers
 
@@ -71,8 +104,8 @@ MemWal is **optional**: without credentials the app runs exactly as before
 (chronological recall from Sui + Walrus). To enable it, generate a delegate key +
 account id at the Walrus Memory dashboard (testnet:
 `https://staging.memory.walrus.xyz`) and set `MEMWAL_ACCOUNT_ID`,
-`MEMWAL_DELEGATE_KEY`, and `MEMWAL_SERVER_URL` in `server/.env` (see
-`server/.env.example`). `GET /api/health` reports `memwal: true/false`.
+`MEMWAL_DELEGATE_KEY`, and `MEMWAL_SERVER_URL` in `server/.env` or your backend
+deployment environment. `GET /api/health` reports `memwal: true/false`.
 
 ---
 
@@ -87,9 +120,22 @@ npm --prefix server install
 
 ### 2. Configure
 
+Create `.env` at the repo root for the frontend:
+
 ```bash
-cp .env.example .env                 # frontend (package id, optional API url)
-cp server/.env.example server/.env   # backend (Walrus urls, optional Claude key)
+VITE_SERVER_URL=http://localhost:8787
+VITE_RECALLFORGE_PACKAGE_ID_TESTNET=0x<your_package_id>
+```
+
+Create `server/.env` for the backend:
+
+```bash
+CLIENT_ORIGIN=http://localhost:5173
+SUI_NETWORK=testnet
+WALRUS_PUBLISHER_URL=https://publisher.walrus-testnet.walrus.space
+WALRUS_AGGREGATOR_URL=https://aggregator.walrus-testnet.walrus.space
+WALRUS_EPOCHS=5
+WALRUS_LOCAL=0
 ```
 
 - **No Anthropic key?** Leave `ANTHROPIC_API_KEY` unset — the agents run on the
@@ -186,9 +232,10 @@ npm run codegen
 
 ```
 move/recallforge/      Sui Move package (LearnerProfile, SkillCheckpoint, AgentPermission)
-shared/schema.ts       zod schemas + types shared by frontend and backend
+shared/schema.ts       frontend zod schemas + shared UI/API types
 server/                stateless Express API (agents + Walrus)
   src/agents/          mentor, challenge, evaluator, llm wrapper, deterministic fallback
+  src/shared/schema.ts backend-local schema copy for serverless runtime packaging
   src/walrus/          Walrus HTTP client + local fallback
   src/routes/          /api endpoints
   src/middleware/      validate, rate-limit, async handler
@@ -208,5 +255,6 @@ src/                   React frontend
 | `npm run dev:server` | Backend only |
 | `npm --prefix server run build` | Build the backend |
 | `npm run build` | Type-check + build the frontend |
+| `npm run build:site` | Build the frontend with Walrus Sites route metadata |
 | `npm --prefix server run typecheck` | Type-check the backend |
 | `npm run codegen` | Regenerate Move TS bindings (optional) |
