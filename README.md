@@ -20,7 +20,7 @@ Built for **Sui Overflow · Walrus Track**.
 
 ## Live demo
 
-- **App:** `https://recallforgeai.vercel.app`
+- **App:** `https://recallforge.me`
 - **API health:** `https://recallforgebackend.vercel.app/api/health`
 - **Demo video:** `https://youtu.be/t0u9uNYy0HI`
 - **Sui package:** `0x9c42bd6d9b5af44c7f3a435fce129c5c35df026a05d198645894ce6e72dea939`
